@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Farcaster Mini Apps</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0a12;
+    --surface: #12121e;
+    --surface2: #1a1a2e;
+    --border: rgba(139, 92, 246, 0.18);
+    --border-hover: rgba(139, 92, 246, 0.45);
+    --purple: #8b5cf6;
+    --purple-light: #a78bfa;
+    --purple-dim: rgba(139, 92, 246, 0.12);
+    --text: #f0eeff;
+    --text-muted: #8b8aaa;
+    --text-dim: #5a5878;
+    --accent-gold: #f5c542;
+    --accent-teal: #2dd4bf;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Space Grotesk', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* grid bg */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(139,92,246,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(139,92,246,0.04) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrap { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 0 24px; }
+
+  /* HERO */
+  .hero {
+    padding: 100px 0 72px;
+    text-align: center;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--purple-dim);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 6px 16px;
+    font-size: 13px;
+    color: var(--purple-light);
+    letter-spacing: 0.04em;
+    margin-bottom: 28px;
+  }
+
+  .badge-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--purple);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.7); }
+  }
+
+  h1 {
+    font-size: clamp(40px, 8vw, 72px);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    margin-bottom: 20px;
+  }
+
+  h1 span {
+    color: var(--purple-light);
+  }
+
+  .hero-sub {
+    font-size: 18px;
+    color: var(--text-muted);
+    max-width: 480px;
+    margin: 0 auto 48px;
+    line-height: 1.6;
+  }
+
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text);
+    display: block;
+  }
+
+  .stat-label {
+    font-size: 13px;
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .stat-divider {
+    width: 1px;
+    height: 40px;
+    background: var(--border);
+    align-self: center;
+  }
+
+  /* APPS SECTION */
+  .section-label {
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .apps { display: flex; flex-direction: column; gap: 20px; padding-bottom: 80px; }
+
+  .app-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 32px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 24px;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s, background 0.2s, transform 0.15s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .app-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--purple), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .app-card:hover {
+    border-color: var(--border-hover);
+    background: var(--surface2);
+    transform: translateY(-2px);
+  }
+
+  .app-card:hover::before { opacity: 1; }
+
+  .app-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    background: var(--purple-dim);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    flex-shrink: 0;
+  }
+
+  .app-icon.gold { background: rgba(245, 197, 66, 0.1); border-color: rgba(245, 197, 66, 0.2); }
+  .app-icon.teal { background: rgba(45, 212, 191, 0.1); border-color: rgba(45, 212, 191, 0.2); }
+  .app-icon.purple { background: rgba(139, 92, 246, 0.12); border-color: rgba(139, 92, 246, 0.25); }
+
+  .app-info { min-width: 0; }
+
+  .app-name {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+
+  .app-desc {
+    font-size: 15px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin-bottom: 14px;
+  }
+
+  .app-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  .tag {
+    font-size: 12px;
+    padding: 3px 10px;
+    border-radius: 100px;
+    border: 1px solid;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+
+  .tag-purple { color: var(--purple-light); border-color: rgba(139,92,246,0.3); background: rgba(139,92,246,0.08); }
+  .tag-gold { color: var(--accent-gold); border-color: rgba(245,197,66,0.3); background: rgba(245,197,66,0.08); }
+  .tag-teal { color: var(--accent-teal); border-color: rgba(45,212,191,0.3); background: rgba(45,212,191,0.08); }
+
+  .app-arrow {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-dim);
+    flex-shrink: 0;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+  }
+
+  .app-card:hover .app-arrow {
+    border-color: var(--purple);
+    color: var(--purple-light);
+    background: var(--purple-dim);
+  }
+
+  .app-arrow svg { width: 18px; height: 18px; }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 32px 0;
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 13px;
+  }
+
+  footer a { color: var(--purple-light); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  @media (max-width: 580px) {
+    .app-card { grid-template-columns: auto 1fr; gap: 16px; }
+    .app-arrow { display: none; }
+    .app-icon { width: 52px; height: 52px; font-size: 22px; }
+    .app-name { font-size: 18px; }
+    .stat-divider { display: none; }
+    .hero-stats { gap: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <section class="hero">
+    <div class="badge">
+      <span class="badge-dot"></span>
+      Built on Farcaster
+    </div>
+    <h1>Mini Apps<br><span>by Blackcap</span></h1>
+    <p class="hero-sub">Farcaster ekosistemi için geliştirilen 3 mini uygulama — oyun, tahmin ve dünya kupası.</p>
+    <div class="hero-stats">
+      <div class="stat">
+        <span class="stat-num">3</span>
+        <span class="stat-label">Apps</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <span class="stat-num">FC</span>
+        <span class="stat-label">Network</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <span class="stat-num">2025</span>
+        <span class="stat-label">Season</span>
+      </div>
+    </div>
+  </section>
+
+  <p class="section-label">Apps</p>
+
+  <div class="apps">
+
+    <a class="app-card" href="https://farcaster.xyz/miniapps/WIMT4asEwfzP/todayvibe" target="_blank" rel="noopener">
+      <div class="app-icon purple">✨</div>
+      <div class="app-info">
+        <div class="app-name">TodayVibe</div>
+        <div class="app-desc">Günlük kozmik enerji tahmini — kategorileri seç, çevir, bugünün vibe'ını keşfet.</div>
+        <div class="app-tags">
+          <span class="tag tag-purple">Daily</span>
+          <span class="tag tag-purple">Fortune</span>
+          <span class="tag tag-purple">Cosmic</span>
+        </div>
+      </div>
+      <div class="app-arrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M7 17L17 7M17 7H7M17 7v10"/>
+        </svg>
+      </div>
+    </a>
+
+    <a class="app-card" href="https://farcaster.xyz/miniapps/OILJnpCUspKY/number-guess-battle" target="_blank" rel="noopener">
+      <div class="app-icon gold">🎯</div>
+      <div class="app-info">
+        <div class="app-name">Number Guess Battle</div>
+        <div class="app-desc">Sayıyı tahmin et, rakibini geç — hızlı refleks gerektiren çok oyunculu tahmin oyunu.</div>
+        <div class="app-tags">
+          <span class="tag tag-gold">Game</span>
+          <span class="tag tag-gold">Multiplayer</span>
+          <span class="tag tag-gold">Competitive</span>
+        </div>
+      </div>
+      <div class="app-arrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M7 17L17 7M17 7H7M17 7v10"/>
+        </svg>
+      </div>
+    </a>
+
+    <a class="app-card" href="https://farcaster.xyz/miniapps/ORPbWE8oJlak/world-cup-2026" target="_blank" rel="noopener">
+      <div class="app-icon teal">⚽</div>
+      <div class="app-info">
+        <div class="app-name">World Cup 2026</div>
+        <div class="app-desc">2026 Dünya Kupası tahmin ve bahis uygulaması — maçları takip et, kazananı seç.</div>
+        <div class="app-tags">
+          <span class="tag tag-teal">Football</span>
+          <span class="tag tag-teal">Predictions</span>
+          <span class="tag tag-teal">WC 2026</span>
+        </div>
+      </div>
+      <div class="app-arrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M7 17L17 7M17 7H7M17 7v10"/>
+        </svg>
+      </div>
+    </a>
+
+  </div>
+
+</div>
+
+<footer>
+  <div class="wrap">
+    Built with <a href="https://farcaster.xyz" target="_blank">Farcaster Studio</a> &nbsp;·&nbsp;
+    <a href="https://warpcast.com" target="_blank">Warpcast'te bul</a>
+  </div>
+</footer>
+
+</body>
+</html>
